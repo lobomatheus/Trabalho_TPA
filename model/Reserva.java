@@ -7,6 +7,7 @@ public class Reserva {
     private Calendar dataEntrada;
     private int qtdDias;
     private boolean incluiCafe;
+    // inserir quarto aqui
 
     public Reserva(){
 
