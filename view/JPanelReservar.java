@@ -10,8 +10,10 @@ import java.util.Calendar;
 public class JPanelReservar extends JPanel {
 
     private Calendar dataEntrada;
+    private JPrincipal principal;
 
-    public JPanelReservar(){
+    public JPanelReservar(JPrincipal principal){
+        this.principal = principal;
         initComponents();
     }
 
@@ -37,11 +39,23 @@ public class JPanelReservar extends JPanel {
         btnReservar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                // Chamar controlador daqui
+                principal.RealizarReserva(dataEntrada, (Integer)spinner.getValue(), boxCafe.isSelected(), new Long(10));
+            }
+        });
+
+        btnVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                
             }
         });
 
         this.add(lblData);
         this.add((JComponent)picker);
+        this.add(lblNdias);
+        this.add(spinner);
+        this.add(boxCafe);
+        this.add(btnReservar);
+        this.add(btnVoltar);
     }
 }
