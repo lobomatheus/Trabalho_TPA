@@ -1,5 +1,6 @@
 package control;
 
+import model.Quarto;
 import model.Reserva;
 
 import javax.persistence.EntityManager;
@@ -9,8 +10,8 @@ import java.util.Calendar;
 
 public class ControladorReserva {
 
-    public static void FazerReserva(Calendar data, int numDias, boolean comCafe, Long idQuarto){
-        Reserva reserva = new Reserva(data, numDias, comCafe);
+    public static void FazerReserva(Calendar data, int numDias, boolean comCafe, Quarto quarto){
+        Reserva reserva = new Reserva(data, numDias, comCafe, quarto);
 
         EntityManagerFactory factory = Persistence.createEntityManagerFactory("reserva");
         EntityManager manager = factory.createEntityManager();

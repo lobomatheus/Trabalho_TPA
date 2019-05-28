@@ -13,15 +13,37 @@ public class Reserva {
     @Temporal(TemporalType.DATE)
     private Calendar dataEntrada;
 
-
     private int qtdDias;
     private boolean incluiCafe;
-    // inserir quarto aqui
 
-    public Reserva(Calendar dataEntrada, int qntdDias, boolean cafe){
+    @OneToOne
+    private Quarto quarto;
+
+    public Reserva(Calendar dataEntrada, int qntdDias, boolean cafe, Quarto quarto){
         this.dataEntrada = dataEntrada;
         this.qtdDias = qntdDias;
         this.incluiCafe = cafe;
+        this.quarto = quarto;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Calendar getDataEntrada() {
+        return dataEntrada;
+    }
+
+    public int getQtdDias() {
+        return qtdDias;
+    }
+
+    public boolean isIncluiCafe() {
+        return incluiCafe;
+    }
+
+    public Quarto getQuarto() {
+        return quarto;
     }
 
 }
