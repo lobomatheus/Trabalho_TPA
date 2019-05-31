@@ -16,10 +16,12 @@ public class Reserva {
     private int qtdDias;
     private boolean incluiCafe;
 
-    @OneToOne
+    @ManyToOne
     private Quarto quarto;
 
     private boolean checkin;
+
+    private float valor;
 
     public Reserva(Calendar dataEntrada, int qntdDias, boolean cafe, Quarto quarto){
         this.dataEntrada = dataEntrada;
@@ -49,11 +51,24 @@ public class Reserva {
         return quarto;
     }
 
+    public float getValor() {
+        return this.valor;
+    }
+
     public boolean isCheckin(){
         return this.checkin;
     }
 
     public void doCheckin(){
         this.checkin = true;
+    }
+
+    public float calcularValor(){
+        float valor = 0;
+
+
+
+        this.valor = valor;
+        return valor;
     }
 }

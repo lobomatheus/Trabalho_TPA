@@ -5,6 +5,8 @@ import model.Reserva;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ReservaDAO {
 
@@ -39,10 +41,46 @@ public class ReservaDAO {
 
         startManager();
 
-        reserva = (Reserva)_manager.createQuery("(select r from Reserva as r where quarto_num = )" + numQuarto + ";").getSingleResult();
+        reserva = (Reserva)_manager.createQuery("select r " +
+                                                    "from Reserva as r " +
+                                                    "where 'quarto_num' = " + numQuarto + " " +
+                                                    "order by dataEntrada;").getSingleResult();
 
         closeManagerAndFactory();
 
         return reserva;
+    }
+
+    public static double getReservaByAno(boolean checkin){
+        double sum=0.0;
+
+        startManager();
+
+        //Vai retornar o preço total arrecadado
+        sum = (double)_manager.createQuery("select sum(r.valor) " +
+                                             "from Reserva as r " +
+                                             "where (year(current_date()) - year(r.dataEntrada)) < 1 " +
+                                             "and r.checkin = checkin").getSingleResult();
+
+        closeManagerAndFactory();
+
+        return sum;
+    }
+
+    public static float getReservaByMes(boolean checkin){
+        float sum=0.0f;
+
+        startManager();
+
+        // Vai retornar o preço total arrecadado
+        sum = (float)_manager.createQuery("select sum(r.valor) " +
+                                             "from Reserva as r " +
+                                             "where (month(current_date()) - month(r.dataEntrada)) < 1 " +
+                                             "and r.checkin = checkin").getSingleResult();
+
+        closeManagerAndFactory();
+
+        return sum;
+
     }
 }
