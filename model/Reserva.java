@@ -19,11 +19,14 @@ public class Reserva {
     @OneToOne
     private Quarto quarto;
 
+    private boolean checkin;
+
     public Reserva(Calendar dataEntrada, int qntdDias, boolean cafe, Quarto quarto){
         this.dataEntrada = dataEntrada;
         this.qtdDias = qntdDias;
         this.incluiCafe = cafe;
         this.quarto = quarto;
+        this.checkin = false;
     }
 
     public Long getId() {
@@ -46,4 +49,11 @@ public class Reserva {
         return quarto;
     }
 
+    public boolean isCheckin(){
+        return this.checkin;
+    }
+
+    public void doCheckin(){
+        this.checkin = true;
+    }
 }

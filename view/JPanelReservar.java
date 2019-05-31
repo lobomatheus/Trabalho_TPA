@@ -5,16 +5,20 @@ import model.Quarto;
 import org.jdatepicker.JDatePicker;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.Calendar;
 
 public class JPanelReservar extends JPanel {
 
     private Calendar dataEntrada;
+    private int spinnerValue = 0;
     private JPrincipal principal;
 
     public JPanelReservar(JPrincipal principal){
@@ -64,14 +68,24 @@ public class JPanelReservar extends JPanel {
         btnReservar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                RealizarReserva(dataEntrada, (Integer)spinner.getValue(), boxCafe.isSelected(), 10);
+                RealizarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), 10);
+            }
+        });
+
+        spinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                try{
+                    spinner.commitEdit();
+                    spinnerValue = (Integer) spinner.getValue();
+                } catch(ParseException e){ }
             }
         });
 
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                // Voltar para a tela inicial
+                principal.Voltar();
             }
         });
 
