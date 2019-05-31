@@ -40,8 +40,14 @@ public class JPanelReservar extends JPanel {
         JCheckBox boxCafe = new JCheckBox("Inclui café da manhã");
 
 
-        String linhas[][] = {{"1", "2", "3", "4", "5", "6"},
-                             {"1", "2", "3", "4", "5", "6"}};
+        String linhas[][] = {{"1", "true", "true", "1", "1", "true"},
+                             {"2", "true", "true", "1", "2", "false"},
+                             {"3", "true", "false", "3", "3", "true"},
+                             {"4", "true", "true", "2", "1", "false"},
+                             {"5", "false", "false", "2", "1", "true"},
+                             {"6", "false", "true", "3", "3", "false"},
+                             {"7", "false", "false", "1", "2", "true"},
+                             {"8", "false", "true", "1", "2", "false"}};
         String colunas[] = {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Valor"};
         JTable tableQuartos = new JTable(linhas, colunas) {
             @Override
@@ -68,7 +74,14 @@ public class JPanelReservar extends JPanel {
         btnReservar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                RealizarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), 10);
+
+                int idQuarto = Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString());
+                System.out.println(idQuarto);
+
+                RealizarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto);
+
+                JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
+                principal.Voltar();
             }
         });
 

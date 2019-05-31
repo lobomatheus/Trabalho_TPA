@@ -14,6 +14,7 @@ public class Reserva {
     private Calendar dataEntrada;
 
     private int qtdDias;
+
     private boolean incluiCafe;
 
     @ManyToOne
@@ -21,7 +22,15 @@ public class Reserva {
 
     private boolean checkin;
 
-    private float valor;
+    private float valorTotal;
+
+    private float valorPago;
+
+    // Construtor sem argumentos requerido pelo JPA
+    public Reserva(){
+        this.checkin = false;
+        this.valorPago = 0;
+    }
 
     public Reserva(Calendar dataEntrada, int qntdDias, boolean cafe, Quarto quarto){
         this.dataEntrada = dataEntrada;
@@ -29,6 +38,7 @@ public class Reserva {
         this.incluiCafe = cafe;
         this.quarto = quarto;
         this.checkin = false;
+        this.valorPago = 0;
     }
 
     public Long getId() {
@@ -51,8 +61,12 @@ public class Reserva {
         return quarto;
     }
 
-    public float getValor() {
-        return this.valor;
+    public float getValorTotal() {
+        return this.valorTotal;
+    }
+
+    public float getValorPago(){
+        return this.valorPago;
     }
 
     public boolean isCheckin(){
@@ -66,9 +80,12 @@ public class Reserva {
     public float calcularValor(){
         float valor = 0;
 
-
-
-        this.valor = valor;
+        this.valorTotal = valor;
         return valor;
+    }
+
+    public void realizarPagamento(float valor){
+        // Exceção de valor pago ser superior ao necessário
+        this.valorPago += valor;
     }
 }

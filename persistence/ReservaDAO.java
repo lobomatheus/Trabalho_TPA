@@ -4,6 +4,7 @@ import model.Reserva;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +37,7 @@ public class ReservaDAO {
         closeManagerAndFactory();
     }
 
-    public static Reserva getReserva(int numQuarto){
+    public static Reserva getReserva(int numQuarto) throws NoResultException {
         Reserva reserva;
 
         startManager();
@@ -44,11 +45,21 @@ public class ReservaDAO {
         reserva = (Reserva)_manager.createQuery("select r " +
                                                     "from Reserva as r " +
                                                     "where 'quarto_num' = " + numQuarto + " " +
-                                                    "order by dataEntrada;").getSingleResult();
+                                                    "order by dataEntrada").getSingleResult();
 
         closeManagerAndFactory();
 
         return reserva;
+    }
+
+    public static void updateReserva(Reserva reserva){
+        startManager();
+
+        _manager.getTransaction().begin();
+        _manager.merge(reserva);
+        _manager.getTransaction().commit();
+
+        closeManagerAndFactory();
     }
 
     public static double getReservaByAno(boolean checkin){
@@ -57,10 +68,19 @@ public class ReservaDAO {
         startManager();
 
         //Vai retornar o preço total arrecadado
-        sum = (double)_manager.createQuery("select sum(r.valor) " +
-                                             "from Reserva as r " +
-                                             "where (year(current_date()) - year(r.dataEntrada)) < 1 " +
-                                             "and r.checkin = checkin").getSingleResult();
+        if(checkin){
+            sum = (double)_manager.createQuery("select sum(r.valorPago) " +
+                    "from Reserva as r " +
+                    "where (year(current_date()) - year(r.dataEntrada)) < 1 " +
+                    "and r.checkin = checkin").getSingleResult();
+
+        } else{
+            sum = (double)_manager.createQuery("select sum(r.valorTotal-r.valorPago) " +
+                    "from Reserva as r " +
+                    "where (year(current_date()) - year(r.dataEntrada)) < 1 " +
+                    "and r.checkin = checkin").getSingleResult();
+
+        }
 
         closeManagerAndFactory();
 
@@ -73,10 +93,19 @@ public class ReservaDAO {
         startManager();
 
         // Vai retornar o preço total arrecadado
-        sum = (float)_manager.createQuery("select sum(r.valor) " +
-                                             "from Reserva as r " +
-                                             "where (month(current_date()) - month(r.dataEntrada)) < 1 " +
-                                             "and r.checkin = checkin").getSingleResult();
+        if(checkin){
+            sum = (float)_manager.createQuery("select sum(r.valorPago) " +
+                    "from Reserva as r " +
+                    "where (month(current_date()) - month(r.dataEntrada)) < 1 " +
+                    "and r.checkin = checkin").getSingleResult();
+
+        } else{
+            sum = (float)_manager.createQuery("select sum(r.valorTotal-r.valorPago) " +
+                    "from Reserva as r " +
+                    "where (month(current_date()) - month(r.dataEntrada)) < 1 " +
+                    "and r.checkin = checkin").getSingleResult();
+
+        }
 
         closeManagerAndFactory();
 

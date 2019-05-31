@@ -6,7 +6,9 @@ import persistence.ReservaDAO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Calendar;
 
 public class ControladorReserva {
@@ -17,6 +19,7 @@ public class ControladorReserva {
         // Caso o quarto não exista, lançar exceção
         // Caso o quarto já esteja reservado, verificar se o checkin foi feito dentro de 24h, caso negativo,
         // excluir a reserva e reservar o quarto.
+        // Se o quarto estiver sido reservado para o período selecionado, não realizar a reserva
 
         // O código abaixo chama o hibernate pra cadastrar o quarto, como teste, já que o quarto não está
         // salvo ainda no banco, para evitar erros.
@@ -24,13 +27,10 @@ public class ControladorReserva {
         EntityManager manager = factory.createEntityManager();
         //------------------------------------------------------------------------------------------------
 
-        Quarto quarto = new Quarto(1, 1, 1, true, true, true);
+        Quarto quarto = manager.find(Quarto.class, idQuarto);
 
         // O código abaixo chama o hibernate pra cadastrar o quarto, como teste, já que o quarto não está
         // salvo ainda no banco, para evitar erros.
-        manager.getTransaction().begin();
-        manager.persist(quarto);
-        manager.getTransaction().commit();
 
         manager.close();
         factory.close();
@@ -42,7 +42,7 @@ public class ControladorReserva {
 
     }
 
-    public static void FazerCheckin(int numQuarto){
+    public static void FazerCheckin(int numQuarto) throws NoResultException{
 
         Reserva reserva = ReservaDAO.getReserva(numQuarto);
 
@@ -51,6 +51,8 @@ public class ControladorReserva {
         }
 
         reserva.doCheckin();
+
+        ReservaDAO.updateReserva(reserva);
     }
 
     // Não sei se esse método aqui é necessário
