@@ -1,5 +1,7 @@
 package view;
 
+import control.ControladorReserva;
+import model.Quarto;
 import org.jdatepicker.JDatePicker;
 
 import javax.swing.*;
@@ -62,14 +64,14 @@ public class JPanelReservar extends JPanel {
         btnReservar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                principal.RealizarReserva(dataEntrada, (Integer)spinner.getValue(), boxCafe.isSelected(), 10);
+                RealizarReserva(dataEntrada, (Integer)spinner.getValue(), boxCafe.isSelected(), 10);
             }
         });
 
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                
+                // Voltar para a tela inicial
             }
         });
 
@@ -86,5 +88,10 @@ public class JPanelReservar extends JPanel {
             panel.add(component);
         }
         return panel;
+    }
+
+
+    private void RealizarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
+        ControladorReserva.FazerReserva(data, numDias, comCafe, idQuarto);
     }
 }
