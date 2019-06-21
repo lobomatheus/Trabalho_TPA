@@ -24,6 +24,10 @@ public class Quarto {
     boolean banheiro;
     boolean internet;
     boolean cabo;
+
+    public Quarto(){
+
+    }
     
     public Quarto(int num, int camas_solt, int camas_cas, boolean banheiro, boolean internet, boolean cabo){
         this.num = num;

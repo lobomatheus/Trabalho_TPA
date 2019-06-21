@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ReservaDAO {
 
@@ -37,7 +38,33 @@ public class ReservaDAO {
         closeManagerAndFactory();
     }
 
-    public static Reserva getReserva(int numQuarto) throws NoResultException {
+    public static List<Reserva> getReserva() throws NoResultException {
+        List<Reserva> reservas;
+
+        startManager();
+
+        reservas = (List<Reserva>)_manager.createQuery("select r from Reserva r").getResultList();
+
+        closeManagerAndFactory();
+
+        return reservas;
+    }
+
+    public static Reserva getReserva(int idReserva) throws NoResultException {
+        Reserva reserva;
+
+        startManager();
+
+        reserva = (Reserva)_manager.createQuery("select r " +
+                                                "from Reserva r " +
+                                                "where r.id = " + idReserva).getSingleResult();
+
+        closeManagerAndFactory();
+
+        return reserva;
+    }
+
+    public static Reserva getReservaByQuarto(int numQuarto) throws NoResultException {
         Reserva reserva;
 
         startManager();
@@ -51,6 +78,7 @@ public class ReservaDAO {
 
         return reserva;
     }
+
 
     public static void updateReserva(Reserva reserva){
         startManager();
@@ -111,5 +139,16 @@ public class ReservaDAO {
 
         return sum;
 
+    }
+
+    public static void removeReserva(Reserva reserva){
+
+        startManager();
+
+        _manager.getTransaction().begin();
+        _manager.remove(_manager.getReference(Reserva.class, reserva.getId()));
+        _manager.getTransaction().commit();
+
+        closeManagerAndFactory();
     }
 }

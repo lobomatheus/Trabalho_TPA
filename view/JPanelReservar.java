@@ -42,19 +42,22 @@ public class JPanelReservar extends JPanel {
         JCheckBox boxCafe = new JCheckBox("Inclui café da manhã");
 
 
-        String linhas[][] = {{"1", "true", "true", "1", "1", "true"},
-                             {"2", "true", "true", "1", "2", "false"},
-                             {"3", "true", "false", "3", "3", "true"},
-                             {"4", "true", "true", "2", "1", "false"},
-                             {"5", "false", "false", "2", "1", "true"},
-                             {"6", "false", "true", "3", "3", "false"},
-                             {"7", "false", "false", "1", "2", "true"},
-                             {"8", "false", "true", "1", "2", "false"}};
-        String colunas[] = {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Valor"};
+        String linhas[][] = controlador.getListaQuartos();
+        String colunas[] = linhas[0];
+
         JTable tableQuartos = new JTable(linhas, colunas) {
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
+            }
+
+            @Override
+            public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend){
+                if(rowIndex == 0){
+                    super.changeSelection(1, columnIndex, toggle, extend);
+                } else{
+                    super.changeSelection(rowIndex, columnIndex, toggle, extend);
+                }
             }
         };
 
@@ -63,6 +66,7 @@ public class JPanelReservar extends JPanel {
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.add(tableQuartos);
         tableQuartos.setFillsViewportHeight(true);
+        scrollPane.setSize(500, 100);
 
 
 
@@ -83,7 +87,7 @@ public class JPanelReservar extends JPanel {
                 RealizarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto);
 
                 JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
-                principal.Voltar();
+                principal.GerenciarReserva();
             }
         });
 
@@ -100,7 +104,7 @@ public class JPanelReservar extends JPanel {
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                principal.Voltar();
+                principal.GerenciarReserva();
             }
         });
 

@@ -24,16 +24,23 @@ public class JPanelCheckin extends JPanel {
     private void initComponents(){
 
         String colunas[] = {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Valor"};
-        JTable tableQuartos = new JTable(){
+        String linhas[][] = controlador.getListaQuartos();
+        JTable tableQuartos = new JTable(linhas, colunas){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
             }
         };
 
-        JLabel lblQuarto = new JLabel("Insira o número do quarto: ");
+        tableQuartos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        JTextField txtNumQuarto = new JTextField(3);
+        ScrollPane scroll = new ScrollPane();
+        scroll.add(tableQuartos);
+        tableQuartos.setFillsViewportHeight(true);
+        scroll.setSize(500, 100);
+
+
+        JLabel lblQuarto = new JLabel("Selecione o quarto: ");
 
         JButton btnVoltar = new JButton("Voltar");
         JButton btnCheckin = new JButton("Checkin");
@@ -42,7 +49,7 @@ public class JPanelCheckin extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try{
-                    int numQuarto = Integer.parseInt(txtNumQuarto.getText());
+                    int numQuarto = Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString());
                     controlador.FazerCheckin(numQuarto);
                     JOptionPane.showMessageDialog(null, "Checkin realizado com sucesso!");
                 } catch (IllegalFormatConversionException e){
@@ -60,7 +67,8 @@ public class JPanelCheckin extends JPanel {
             }
         });
 
-        this.add(gerarPanel(lblQuarto, txtNumQuarto));
+        this.add(lblQuarto);
+        this.add(scroll);
         this.add(gerarPanel(btnVoltar, btnCheckin));
     }
 
