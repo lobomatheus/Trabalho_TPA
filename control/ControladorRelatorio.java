@@ -8,17 +8,30 @@ import java.util.Calendar;
 
 public class ControladorRelatorio {
 
-    private static void VerificarCheckins(){
+    public static ControladorRelatorio controladorRelatorio = null;
+
+    private ControladorRelatorio(){
+
+    }
+
+    public static ControladorRelatorio getInstance(){
+        if(controladorRelatorio==null){
+            controladorRelatorio = new ControladorRelatorio();
+        }
+        return controladorRelatorio;
+    }
+
+    private void VerificarCheckins(){
         // Esse método irá verificar se existe alguma reserva cujo checkin não foi feito para desconsiderar no cálculo.
     }
 
-    public static double RelatorioAnual(boolean checkin){
+    public double RelatorioAnual(boolean checkin){
         double soma = ReservaDAO.getReservaByAno(checkin);
 
         return soma;
     }
 
-    public static float RelatorioMensal(boolean checkin){
+    public float RelatorioMensal(boolean checkin){
         float soma = ReservaDAO.getReservaByMes(checkin);
 
         return soma;

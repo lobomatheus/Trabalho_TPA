@@ -13,7 +13,20 @@ import java.util.Calendar;
 
 public class ControladorReserva {
 
-    public static void FazerReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
+    private static ControladorReserva controladorReserva = null;
+
+    private ControladorReserva(){
+
+    }
+
+    public static ControladorReserva getInstance(){
+        if(controladorReserva==null){
+            controladorReserva = new ControladorReserva();
+        }
+        return controladorReserva;
+    }
+
+    public void FazerReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
 
         // Quando o DAO de buscar quarto estiver funcional, substituir aqui
         // Caso o quarto não exista, lançar exceção
@@ -42,7 +55,7 @@ public class ControladorReserva {
 
     }
 
-    public static void FazerCheckin(int numQuarto) throws NoResultException{
+    public void FazerCheckin(int numQuarto) throws NoResultException{
 
         Reserva reserva = ReservaDAO.getReserva(numQuarto);
 
@@ -56,7 +69,7 @@ public class ControladorReserva {
     }
 
     // Não sei se esse método aqui é necessário
-    public static boolean verificarCheckin(int numQuarto){
+    public boolean verificarCheckin(int numQuarto){
 
         Reserva reserva = ReservaDAO.getReserva(numQuarto);
 

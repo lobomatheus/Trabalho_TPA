@@ -20,10 +20,12 @@ public class JPanelReservar extends JPanel {
     private Calendar dataEntrada;
     private int spinnerValue = 0;
     private JPrincipal principal;
+    private ControladorReserva controlador;
 
     public JPanelReservar(JPrincipal principal){
         this.principal = principal;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        controlador = ControladorReserva.getInstance();
         initComponents();
     }
 
@@ -119,6 +121,6 @@ public class JPanelReservar extends JPanel {
 
 
     private void RealizarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
-        ControladorReserva.FazerReserva(data, numDias, comCafe, idQuarto);
+        controlador.FazerReserva(data, numDias, comCafe, idQuarto);
     }
 }

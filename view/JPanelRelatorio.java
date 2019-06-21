@@ -10,10 +10,12 @@ import java.awt.event.ActionListener;
 public class JPanelRelatorio extends JPanel {
 
     JPrincipal principal;
+    private ControladorRelatorio controlador;
 
     public JPanelRelatorio(JPrincipal principal){
         this.principal = principal;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        controlador = ControladorRelatorio.getInstance();
         initComponents();
     }
 
@@ -30,7 +32,7 @@ public class JPanelRelatorio extends JPanel {
         btnAnual.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                double res = ControladorRelatorio.RelatorioAnual(checkAnual.isSelected());
+                double res = controlador.RelatorioAnual(checkAnual.isSelected());
                 JOptionPane.showMessageDialog(null, "O valor arrecadado anual foi de R$" + String.format("%.2f", res) + ".");
             }
         });
@@ -38,7 +40,7 @@ public class JPanelRelatorio extends JPanel {
         btnMensal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                float res = ControladorRelatorio.RelatorioMensal(checkMensal.isSelected());
+                float res = controlador.RelatorioMensal(checkMensal.isSelected());
                 JOptionPane.showMessageDialog(null, "O valor arrecadado mensal foi de R$" + String.format("%.2f", res) + ".");
             }
         });

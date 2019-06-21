@@ -12,15 +12,24 @@ import java.util.IllegalFormatConversionException;
 public class JPanelCheckin extends JPanel {
 
     private JPrincipal principal; // trocar para o nome da classe que o Lobo fizer
+    private ControladorReserva controlador;
 
     public JPanelCheckin(JPrincipal principal){
         this.principal = principal;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
+        controlador = ControladorReserva.getInstance();
         initComponents();
     }
 
     private void initComponents(){
+
+        String colunas[] = {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Valor"};
+        JTable tableQuartos = new JTable(){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
 
         JLabel lblQuarto = new JLabel("Insira o número do quarto: ");
 
@@ -34,7 +43,7 @@ public class JPanelCheckin extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 try{
                     int numQuarto = Integer.parseInt(txtNumQuarto.getText());
-                    ControladorReserva.FazerCheckin(numQuarto);
+                    controlador.FazerCheckin(numQuarto);
                     JOptionPane.showMessageDialog(null, "Checkin realizado com sucesso!");
                 } catch (IllegalFormatConversionException e){
                     JOptionPane.showMessageDialog(null, "Valor do quarto inserido incorretamente!");
