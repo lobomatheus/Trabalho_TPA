@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +30,7 @@ public class ControladorReserva {
         return controladorReserva;
     }
 
-    public void FazerReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
+    public void FazerReserva(Calendar data, int numDias, boolean comCafe, int idQuarto, boolean editing, Long id){
 
         // Quando o DAO de buscar quarto estiver funcional, substituir aqui
         // Caso o quarto não exista, lançar exceção
@@ -54,13 +55,16 @@ public class ControladorReserva {
 
         Reserva reserva = new Reserva(data, numDias, comCafe, quarto);
 
-        ReservaDAO.cadastrarReserva(reserva);
+        if(id!=null) reserva.setId(id);
+
+        if(!editing) ReservaDAO.cadastrarReserva(reserva);
+        else ReservaDAO.updateReserva(reserva);
 
     }
 
-    public void FazerCheckin(int numQuarto) throws NoResultException{
+    public void FazerCheckin(int numReserva) throws NoResultException{
 
-        Reserva reserva = ReservaDAO.getReservaByQuarto(numQuarto);
+        Reserva reserva = ReservaDAO.getReserva(numReserva);
 
         if(!reserva.isCheckin()){
             // throws checkin já feito
@@ -69,14 +73,6 @@ public class ControladorReserva {
         reserva.doCheckin();
 
         ReservaDAO.updateReserva(reserva);
-    }
-
-    // Não sei se esse método aqui é necessário
-    public boolean verificarCheckin(int numQuarto){
-
-        Reserva reserva = ReservaDAO.getReservaByQuarto(numQuarto);
-
-        return reserva.isCheckin();
     }
 
     public String[][] getListaQuartos(){
@@ -96,8 +92,7 @@ public class ControladorReserva {
         return quartos;
     }
 
-    public String[][] getListaReservas(){
-        List<Reserva> reservas = ReservaDAO.getReserva();
+    private String[][] gerarListaReservas(List<Reserva> reservas){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         int N = reservas.size()+1;
         String retorno[][] = new String[N][8];
@@ -116,6 +111,15 @@ public class ControladorReserva {
             i++;
         }
         return retorno;
+    }
+
+    public String[][] getListaReservasSemCheckin(){
+        return gerarListaReservas(ReservaDAO.getReservaSemCheckin());
+    }
+
+    public String[][] getListaReservas(){
+        List<Reserva> reservas = ReservaDAO.getReserva();
+        return gerarListaReservas(reservas);
     }
 
     public void removerReserva(int id){

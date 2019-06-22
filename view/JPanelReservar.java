@@ -21,12 +21,19 @@ public class JPanelReservar extends JPanel {
     private int spinnerValue = 0;
     private JPrincipal principal;
     private ControladorReserva controlador;
+    private boolean editing=false;
+    private Long idEditing=null;
 
     public JPanelReservar(JPrincipal principal){
         this.principal = principal;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         controlador = ControladorReserva.getInstance();
         initComponents();
+    }
+
+    public void setEditing(Long id){
+        this.editing = true;
+        this.idEditing = id;
     }
 
     private void initComponents(){
@@ -82,11 +89,12 @@ public class JPanelReservar extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
 
                 int idQuarto = Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString());
-                System.out.println(idQuarto);
 
-                RealizarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto);
+                controlador.FazerReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto, editing, idEditing);
 
-                JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
+                if(!editing) JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
+                else JOptionPane.showMessageDialog(null, "Reserva atualizada com sucesso!");
+
                 principal.GerenciarReserva();
             }
         });
@@ -121,10 +129,5 @@ public class JPanelReservar extends JPanel {
             panel.add(component);
         }
         return panel;
-    }
-
-
-    private void RealizarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
-        controlador.FazerReserva(data, numDias, comCafe, idQuarto);
     }
 }

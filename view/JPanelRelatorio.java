@@ -28,6 +28,7 @@ public class JPanelRelatorio extends JPanel {
 
         JCheckBox checkMensal = new JCheckBox("Relatório futuro?");
 
+        JButton btnVoltar = new JButton("Voltar");
 
         btnAnual.addActionListener(new ActionListener() {
             @Override
@@ -45,9 +46,16 @@ public class JPanelRelatorio extends JPanel {
             }
         });
 
+        btnVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                principal.Voltar();
+            }
+        });
+
         add(gerarPanel(btnAnual, checkAnual));
         add(gerarPanel(btnMensal, checkMensal));
-
+        add(btnVoltar);
     }
 
     private JPanel gerarPanel(Component... compList){

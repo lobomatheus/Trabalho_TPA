@@ -73,6 +73,10 @@ public class Reserva {
         return this.checkin;
     }
 
+    public void setId(Long id){
+        this.id = id;
+    }
+
     public void doCheckin(){
         this.checkin = true;
     }

@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -62,6 +63,20 @@ public class ReservaDAO {
         closeManagerAndFactory();
 
         return reserva;
+    }
+
+    public static List<Reserva> getReservaSemCheckin() throws NoResultException {
+        List<Reserva> reservas;
+
+        startManager();
+
+        reservas = (List<Reserva>)_manager.createQuery("select r " +
+                "from Reserva r " +
+                "where r.checkin = false ").getResultList();
+
+        closeManagerAndFactory();
+
+        return reservas;
     }
 
     public static Reserva getReservaByQuarto(int numQuarto) throws NoResultException {

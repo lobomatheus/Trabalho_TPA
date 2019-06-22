@@ -23,24 +23,24 @@ public class JPanelCheckin extends JPanel {
 
     private void initComponents(){
 
-        String colunas[] = {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Valor"};
-        String linhas[][] = controlador.getListaQuartos();
-        JTable tableQuartos = new JTable(linhas, colunas){
+        String linhas[][] = controlador.getListaReservasSemCheckin();
+        String colunas[] = linhas[0];
+        JTable tableReservas = new JTable(linhas, colunas){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
             }
         };
 
-        tableQuartos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         ScrollPane scroll = new ScrollPane();
-        scroll.add(tableQuartos);
-        tableQuartos.setFillsViewportHeight(true);
+        scroll.add(tableReservas);
+        tableReservas.setFillsViewportHeight(true);
         scroll.setSize(500, 100);
 
 
-        JLabel lblQuarto = new JLabel("Selecione o quarto: ");
+        JLabel lblQuarto = new JLabel("Selecione a reserva: ");
 
         JButton btnVoltar = new JButton("Voltar");
         JButton btnCheckin = new JButton("Checkin");
@@ -48,14 +48,19 @@ public class JPanelCheckin extends JPanel {
         btnCheckin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                try{
-                    int numQuarto = Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString());
-                    controlador.FazerCheckin(numQuarto);
-                    JOptionPane.showMessageDialog(null, "Checkin realizado com sucesso!");
-                } catch (IllegalFormatConversionException e){
-                    JOptionPane.showMessageDialog(null, "Valor do quarto inserido incorretamente!");
-                } catch (NoResultException e){
-                    JOptionPane.showMessageDialog(null, "Quarto não encontrado ou não reservado!");
+
+                if(tableReservas.getSelectedRow() != -1){
+                    try{
+                        int numReserva = Integer.parseInt(tableReservas.getValueAt(tableReservas.getSelectedRow(), 0).toString());
+                        controlador.FazerCheckin(numReserva);
+                        JOptionPane.showMessageDialog(null, "Checkin realizado com sucesso!");
+                        principal.Voltar();
+                        principal.FazerCheckin();
+                    } catch (IllegalFormatConversionException e){
+                        JOptionPane.showMessageDialog(null, "Valor da reserva inserida incorretamente!");
+                    } catch (NoResultException e){
+                        JOptionPane.showMessageDialog(null, "Reserva não encontrada ou não realizada!");
+                    }
                 }
             }
         });
