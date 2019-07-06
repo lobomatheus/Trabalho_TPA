@@ -21,10 +21,6 @@ public class ControladorRelatorio {
         return controladorRelatorio;
     }
 
-    private void VerificarCheckins(){
-        // Esse método irá verificar se existe alguma reserva cujo checkin não foi feito para desconsiderar no cálculo.
-    }
-
     public double RelatorioAnual(boolean checkin){
         double soma = ReservaDAO.getReservaByAno(checkin);
 

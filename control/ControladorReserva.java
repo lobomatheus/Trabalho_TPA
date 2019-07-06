@@ -1,5 +1,6 @@
 package control;
 
+import exception.ValorPagoException;
 import model.Quarto;
 import model.Reserva;
 import persistence.ReservaDAO;
@@ -19,6 +20,8 @@ public class ControladorReserva {
 
     private static ControladorReserva controladorReserva = null;
 
+    private ReservaBuilder reservaBuilder = null;
+
     private ControladorReserva(){
 
     }
@@ -30,8 +33,8 @@ public class ControladorReserva {
         return controladorReserva;
     }
 
-    public void FazerReserva(Calendar data, int numDias, boolean comCafe, int idQuarto, boolean editing, Long id){
 
+    private Quarto encontrarQuarto(int idQuarto){
         // Quando o DAO de buscar quarto estiver funcional, substituir aqui
         // Caso o quarto não exista, lançar exceção
         // Caso o quarto já esteja reservado, verificar se o checkin foi feito dentro de 24h, caso negativo,
@@ -53,22 +56,48 @@ public class ControladorReserva {
         factory.close();
         //------------------------------------------------------------------------------------------------
 
+        return quarto;
+
+    }
+
+    public void editarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto, Long id){
+        Quarto quarto = encontrarQuarto(idQuarto);
         Reserva reserva = new Reserva(data, numDias, comCafe, quarto);
 
-        if(id!=null) reserva.setId(id);
+        reserva.setId(id);
+        ReservaDAO.updateReserva(reserva);
+    }
 
-        if(!editing) ReservaDAO.cadastrarReserva(reserva);
-        else ReservaDAO.updateReserva(reserva);
+    public float iniciarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
 
+        Quarto quarto = encontrarQuarto(idQuarto);
+
+        reservaBuilder = new ReservaBuilder(data, numDias, comCafe, quarto);
+
+        return reservaBuilder.calcularValorTotal();
+
+    }
+
+    public void pagarReservaEmConstrucao(float valor) throws ValorPagoException {
+        reservaBuilder.setValorPago(valor);
+    }
+
+    public void realizarReserva() throws ValorPagoException{
+        Reserva reserva = reservaBuilder.getReserva();
+
+        ReservaDAO.cadastrarReserva(reserva);
+
+        reservaBuilder = null;
+
+    }
+
+    public void cancelarReserva() {
+        reservaBuilder = null;
     }
 
     public void FazerCheckin(int numReserva) throws NoResultException{
 
         Reserva reserva = ReservaDAO.getReserva(numReserva);
-
-        if(!reserva.isCheckin()){
-            // throws checkin já feito
-        }
 
         reserva.doCheckin();
 

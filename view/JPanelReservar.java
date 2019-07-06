@@ -1,6 +1,7 @@
 package view;
 
 import control.ControladorReserva;
+import exception.ValorPagoException;
 import model.Quarto;
 import org.jdatepicker.JDatePicker;
 
@@ -90,10 +91,44 @@ public class JPanelReservar extends JPanel {
 
                 int idQuarto = Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString());
 
-                controlador.FazerReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto, editing, idEditing);
+                if(!editing){
 
-                if(!editing) JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
-                else JOptionPane.showMessageDialog(null, "Reserva atualizada com sucesso!");
+                    float valor = controlador.iniciarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto);
+
+
+                    float valorPago;
+
+                    while(true){
+                        try {
+                            valorPago = Float.parseFloat(JOptionPane.showInputDialog(null,
+                                    "O valor total da reserva deu: " + valor + "\nQuanto deseja pagar?"));
+                            controlador.pagarReservaEmConstrucao(valorPago);
+                            controlador.realizarReserva();
+                            JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
+                            break;
+
+                        } catch (ValorPagoException e){
+                            valorPago = Float.parseFloat(JOptionPane.showInputDialog(null,
+                                    "O valor total da reserva deu: " + valor + " e você precisa pagar [porcentagem]\n" +
+                                            "Quanto deseja pagar (0 para cancelar)?"));
+
+                            if(valorPago == 0){
+                                JOptionPane.showMessageDialog(null, "Reserva cancelada com sucesso!");
+                                controlador.cancelarReserva();
+                                break;
+                            }
+                        } catch (NumberFormatException e){
+                            JOptionPane.showMessageDialog(null, "Valor inserido incorretamente!");
+                        }
+                    }
+
+                }
+                else {
+
+                    controlador.editarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto, idEditing);
+
+                    JOptionPane.showMessageDialog(null, "Reserva atualizada com sucesso!");
+                }
 
                 principal.GerenciarReserva();
             }

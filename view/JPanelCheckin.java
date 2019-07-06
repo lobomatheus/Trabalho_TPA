@@ -30,6 +30,15 @@ public class JPanelCheckin extends JPanel {
             public boolean isCellEditable(int row, int column){
                 return false;
             }
+
+            @Override
+            public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend){
+                if(rowIndex == 0){
+                    super.changeSelection(1, columnIndex, toggle, extend);
+                } else{
+                    super.changeSelection(rowIndex, columnIndex, toggle, extend);
+                }
+            }
         };
 
         tableReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
