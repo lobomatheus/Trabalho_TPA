@@ -1,5 +1,7 @@
 package model;
 
+import exception.ValorPagoException;
+
 import javax.persistence.*;
 import java.util.Calendar;
 
@@ -88,8 +90,9 @@ public class Reserva {
         return valor;
     }
 
-    public void realizarPagamento(float valor){
+    public void realizarPagamento(float valor) throws ValorPagoException{
         // Exceção de valor pago ser superior ao necessário
+        if(valor + this.valorPago > this.valorTotal) throw new ValorPagoException();
         this.valorPago += valor;
     }
 }

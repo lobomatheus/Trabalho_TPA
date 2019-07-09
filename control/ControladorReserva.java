@@ -104,6 +104,16 @@ public class ControladorReserva {
         ReservaDAO.updateReserva(reserva);
     }
 
+    public void PagarReserva(float valor, int idReserva) throws ValorPagoException{
+
+        Reserva reserva = ReservaDAO.getReserva(idReserva);
+
+        reserva.realizarPagamento(valor);
+
+        ReservaDAO.updateReserva(reserva);
+
+    }
+
     public String[][] getListaQuartos(){
         // Irá retornar os quartos com ou sem checkin a partir do banco de dados
         // Quando acesso ao banco estiver pronto, precisa especificar qual quarto

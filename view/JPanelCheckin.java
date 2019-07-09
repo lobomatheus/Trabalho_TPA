@@ -1,6 +1,8 @@
 package view;
 
 import control.ControladorReserva;
+import exception.ValorPagoException;
+import jdk.nashorn.internal.scripts.JO;
 
 import javax.persistence.NoResultException;
 import javax.swing.*;
@@ -53,6 +55,7 @@ public class JPanelCheckin extends JPanel {
 
         JButton btnVoltar = new JButton("Voltar");
         JButton btnCheckin = new JButton("Checkin");
+        JButton btnPagar = new JButton("Pagar");
 
         btnCheckin.addActionListener(new ActionListener() {
             @Override
@@ -74,6 +77,39 @@ public class JPanelCheckin extends JPanel {
             }
         });
 
+        btnPagar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                if(tableReservas.getSelectedRow() != -1) {
+                    int numReserva = Integer.parseInt(tableReservas.getValueAt(tableReservas.getSelectedRow(), 0).toString());
+                    while (true) {
+                        try {
+                            float valor = Float.parseFloat(JOptionPane.showInputDialog(null, "Insira o valor a pagar:"));
+                            controlador.PagarReserva(valor, numReserva);
+                            principal.Voltar();
+                            principal.FazerCheckin();
+                            break;
+                        } catch (ValorPagoException e) {
+                            if(JOptionPane.showConfirmDialog(null,
+                                    "Valor inserido acima do necessário! Deseja cancelar o pagamento?",
+                                    "Erro!",
+                                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) break;
+
+                        } catch (NumberFormatException e){
+                            if(JOptionPane.showConfirmDialog(null,
+                                    "Valor inserido incorretamente! Deseja cancelar o pagamento?",
+                                    "Erro!",
+                                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) break;
+                        } catch (NullPointerException e){
+                            break;
+                        }
+                    }
+                }
+
+            }
+        });
+
         btnVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -83,7 +119,7 @@ public class JPanelCheckin extends JPanel {
 
         this.add(lblQuarto);
         this.add(scroll);
-        this.add(gerarPanel(btnVoltar, btnCheckin));
+        this.add(gerarPanel(btnVoltar, btnCheckin, btnPagar));
     }
 
     private JPanel gerarPanel(Component... compList){
