@@ -1,7 +1,9 @@
 package view;
 
 import control.ControladorReserva;
+import exception.QuartoReservadoException;
 import exception.ValorPagoException;
+import jdk.nashorn.internal.scripts.JO;
 import model.Quarto;
 import org.jdatepicker.JDatePicker;
 
@@ -92,8 +94,14 @@ public class JPanelReservar extends JPanel {
                 int idQuarto = Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString());
 
                 if(!editing){
+                    float valor = 0;
 
-                    float valor = controlador.iniciarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto);
+                    try{
+                        valor = controlador.iniciarReserva(dataEntrada, spinnerValue, boxCafe.isSelected(), idQuarto);
+                    } catch (QuartoReservadoException e){
+                        JOptionPane.showMessageDialog(null, "Esse quarto já está reservado para a data selecionada!");
+                        return;
+                    }
 
 
                     float valorPago;

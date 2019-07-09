@@ -1,9 +1,14 @@
 package control;
 
+import exception.QuartoReservadoException;
 import exception.ValorPagoException;
 import model.Quarto;
 import model.Reserva;
+import model.Valores;
+import persistence.QuartoDAO;
 import persistence.ReservaDAO;
+import persistence.ValoresDAO;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,29 +40,7 @@ public class ControladorReserva {
 
 
     private Quarto encontrarQuarto(int idQuarto){
-        // Quando o DAO de buscar quarto estiver funcional, substituir aqui
-        // Caso o quarto não exista, lançar exceção
-        // Caso o quarto já esteja reservado, verificar se o checkin foi feito dentro de 24h, caso negativo,
-        // excluir a reserva e reservar o quarto.
-        // Se o quarto estiver sido reservado para o período selecionado, não realizar a reserva
-
-        // O código abaixo chama o hibernate pra cadastrar o quarto, como teste, já que o quarto não está
-        // salvo ainda no banco, para evitar erros.
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("quartos");
-        EntityManager manager = factory.createEntityManager();
-        //------------------------------------------------------------------------------------------------
-
-        Quarto quarto = manager.find(Quarto.class, idQuarto);
-
-        // O código abaixo chama o hibernate pra cadastrar o quarto, como teste, já que o quarto não está
-        // salvo ainda no banco, para evitar erros.
-
-        manager.close();
-        factory.close();
-        //------------------------------------------------------------------------------------------------
-
-        return quarto;
-
+        return QuartoDAO.getQuarto(idQuarto);
     }
 
     public void editarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto, Long id){
@@ -68,13 +51,67 @@ public class ControladorReserva {
         ReservaDAO.updateReserva(reserva);
     }
 
-    public float iniciarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto){
+    private float calcularValorTotal(){
+        Valores valores = ValoresDAO.getValores();
+        Quarto q = reservaBuilder.getQuarto();
+        float custo = 0;
+        custo += q.getValor();
+        if(reservaBuilder.isIncluiCafe()) custo += valores.getValorCafe();
+        if(q.isInternet()) custo += valores.getValorInternet();
+        if(q.isBanheiro()) custo += valores.getValorBanheiro();
+        if(q.isCabo()) custo += valores.getValorTV();
+        custo += q.getCamas_cas()*valores.getValorCamaCasal();
+        custo += q.getCamas_solt()*valores.getValorCamaSolteiro();
+        reservaBuilder.setPorcentagemPagamento(valores.getPorcentagemPagamento());
+        reservaBuilder.setValorTotal(custo);
+        return custo;
+
+    }
+
+    private boolean verificarCheckin(Reserva r){
+
+        Calendar now = Calendar.getInstance();
+        Calendar rDate = r.getDataEntrada();
+
+        if(rDate.getTimeInMillis() - now.getTimeInMillis() < 24*60*60*1000){
+            if(!r.isCheckin()){
+                ReservaDAO.removeReserva(r);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean verificarDisponibilidade(Quarto q, int numDias, Calendar data) {
+        List<Reserva> reservas = ReservaDAO.getReservasByQuarto(q.getNum());
+
+        System.out.println(reservas.size());
+
+        long iniTime = data.getTimeInMillis();
+        long fimTime = iniTime + numDias*20*60*60*1000; // convertendo tudo para milissegundos
+
+        for(Reserva r : reservas){
+            if(verificarCheckin(r)) continue;
+            long rIni = r.getDataEntrada().getTimeInMillis();
+            long rFim = rIni + r.getQtdDias()*20*60*60*1000;
+            if(iniTime < rIni && fimTime > rFim ||
+                    rIni < iniTime && rFim > iniTime ||
+                    rIni < fimTime && rFim > fimTime
+                    ) return false;
+        }
+        return true;
+    }
+
+    public float iniciarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto) throws QuartoReservadoException{
 
         Quarto quarto = encontrarQuarto(idQuarto);
 
+        if(!verificarDisponibilidade(quarto, numDias, data)) throw new QuartoReservadoException();
+
         reservaBuilder = new ReservaBuilder(data, numDias, comCafe, quarto);
 
-        return reservaBuilder.calcularValorTotal();
+        return calcularValorTotal();
 
     }
 
@@ -115,20 +152,24 @@ public class ControladorReserva {
     }
 
     public String[][] getListaQuartos(){
-        // Irá retornar os quartos com ou sem checkin a partir do banco de dados
-        // Quando acesso ao banco estiver pronto, precisa especificar qual quarto
-        // está com checkin feito e qual não está.
-        // Também será necessário exibir o horario da reserva
-        String[][] quartos =  {{"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Valor"},
-                                {"1", "true", "true", "1", "1", "true"},
-                                {"2", "true", "true", "1", "2", "false"},
-                                {"3", "true", "false", "3", "3", "true"},
-                                {"4", "true", "true", "2", "1", "false"},
-                                {"5", "false", "false", "2", "1", "true"},
-                                {"6", "false", "true", "3", "3", "false"},
-                                {"7", "false", "false", "1", "2", "true"},
-                                {"8", "false", "true", "1", "2", "false"}};
-        return quartos;
+        List<Quarto> quartos = QuartoDAO.getQuartos();
+        int N = quartos.size() + 1;
+
+        String retorno[][] = new String[N][7];
+        String[] colunas =  {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Banheiro", "Valor"};
+        retorno[0] = colunas;
+        int i =1;
+        for(Quarto q : quartos){
+            retorno[i][0] = String.valueOf(q.getNum());
+            retorno[i][1] = String.valueOf(q.getCamas_cas());
+            retorno[i][2] = String.valueOf(q.getCamas_solt());
+            retorno[i][3] = String.valueOf(q.isInternet());
+            retorno[i][4] = String.valueOf(q.isCabo());
+            retorno[i][5] = String.valueOf(q.isBanheiro());
+            retorno[i][6] = String.valueOf(q.getValor());
+            i++;
+        }
+        return retorno;
     }
 
     private String[][] gerarListaReservas(List<Reserva> reservas){

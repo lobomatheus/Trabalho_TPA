@@ -15,6 +15,7 @@ public class ReservaBuilder {
     private boolean checkin;
     private float valorTotal;
     private float valorPago=0;
+    private float porcentagemPagamento;
 
 
     public ReservaBuilder(Calendar data, int numDias, boolean comCafe, Quarto quarto){
@@ -25,12 +26,8 @@ public class ReservaBuilder {
     }
 
     public void setValorPago(float valorPago) throws ValorPagoException {
-        if(valorPago == 0) throw new ValorPagoException();
+        if(valorPago/valorTotal < porcentagemPagamento) throw new ValorPagoException();
         this.valorPago += valorPago;
-    }
-
-    public float calcularValorTotal(){
-        return 0;
     }
 
     public Reserva getReserva() throws ValorPagoException{
@@ -40,5 +37,31 @@ public class ReservaBuilder {
         return reserva;
     }
 
+    public int getQtdDias() {
+        return qtdDias;
+    }
 
+    public boolean isIncluiCafe() {
+        return incluiCafe;
+    }
+
+    public Quarto getQuarto() {
+        return quarto;
+    }
+
+    public void setPorcentagemPagamento(float porcentagemPagamento){
+        this.porcentagemPagamento = porcentagemPagamento;
+    }
+
+    public float getPorcentagemPagamento() {
+        return porcentagemPagamento;
+    }
+
+    public float getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(float valorTotal) {
+        this.valorTotal = valorTotal;
+    }
 }

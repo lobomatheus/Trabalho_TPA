@@ -86,7 +86,7 @@ public class ReservaDAO {
 
         reserva = (Reserva)_manager.createQuery("select r " +
                                                     "from Reserva as r " +
-                                                    "where 'quarto_num' = " + numQuarto + " " +
+                                                    "where quarto_num = " + numQuarto + " " +
                                                     "order by dataEntrada").getSingleResult();
 
         closeManagerAndFactory();
@@ -94,6 +94,19 @@ public class ReservaDAO {
         return reserva;
     }
 
+    public static List<Reserva> getReservasByQuarto(int numQuarto) throws NoResultException {
+        List<Reserva> reservas;
+
+        startManager();
+
+        reservas = (List<Reserva>)_manager.createQuery("select r " +
+                "from Reserva as r " +
+                "where quarto_num = " + numQuarto).getResultList();
+
+        closeManagerAndFactory();
+
+        return reservas;
+    }
 
     public static void updateReserva(Reserva reserva){
         startManager();
@@ -166,4 +179,5 @@ public class ReservaDAO {
 
         closeManagerAndFactory();
     }
+
 }
