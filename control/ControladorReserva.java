@@ -83,10 +83,18 @@ public class ControladorReserva {
         return false;
     }
 
+    public boolean verificarQuartoReservado(int numQuarto){
+        List<Reserva> reservas = ReservaDAO.getReservasByQuarto(numQuarto);
+        int count = 0;
+        for(Reserva r : reservas){
+            if(r.getDataEntrada().getTimeInMillis() + r.getQtdDias()*24*60*60*1000 > Calendar.getInstance().getTimeInMillis()) count++;
+        }
+
+        return count > 0;
+    }
+
     public boolean verificarDisponibilidade(Quarto q, int numDias, Calendar data) {
         List<Reserva> reservas = ReservaDAO.getReservasByQuarto(q.getNum());
-
-        System.out.println(reservas.size());
 
         long iniTime = data.getTimeInMillis();
         long fimTime = iniTime + numDias*20*60*60*1000; // convertendo tudo para milissegundos
@@ -153,23 +161,7 @@ public class ControladorReserva {
 
     public String[][] getListaQuartos(){
         ControladorQuarto controladorQuarto = ControladorQuarto.getInstance();
-        List<Quarto> quartos = controladorQuarto.getQuartos();
-        int N = quartos.size() + 1;
-
-        String retorno[][] = new String[N][6];
-        String[] colunas =  {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Banheiro"};
-        retorno[0] = colunas;
-        int i =1;
-        for(Quarto q : quartos){
-            retorno[i][0] = String.valueOf(q.getNum());
-            retorno[i][1] = String.valueOf(q.getCamas_cas());
-            retorno[i][2] = String.valueOf(q.getCamas_solt());
-            retorno[i][3] = String.valueOf(q.isInternet());
-            retorno[i][4] = String.valueOf(q.isCabo());
-            retorno[i][5] = String.valueOf(q.isBanheiro());
-            i++;
-        }
-        return retorno;
+        return controladorQuarto.getListaQuartos();
     }
 
     private String[][] gerarListaReservas(List<Reserva> reservas){

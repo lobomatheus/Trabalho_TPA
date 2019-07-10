@@ -17,6 +17,7 @@ import javax.persistence.*;
 public class Quarto {
     
     @Id
+    @GeneratedValue
     int num;
     
     int camas_solt;
@@ -29,8 +30,7 @@ public class Quarto {
 
     }
     
-    public Quarto(int num, int camas_solt, int camas_cas, boolean banheiro, boolean internet, boolean cabo){
-        this.num = num;
+    public Quarto(int camas_solt, int camas_cas, boolean banheiro, boolean internet, boolean cabo){
         this.camas_solt = camas_solt;
         this.camas_cas = camas_cas;
         this.banheiro = banheiro;
@@ -71,6 +71,10 @@ public class Quarto {
         else if (casal == 0)
             return "Solteiro: " + solteiro;        
         return "Solteiro: " + solteiro + "\nCasal: " + casal;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 
     public void setInternet(boolean internet) {

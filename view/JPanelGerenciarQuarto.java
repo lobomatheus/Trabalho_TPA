@@ -1,34 +1,30 @@
 package view;
 
-import control.ControladorReserva;
+import control.ControladorQuarto;
+import exception.QuartoReservadoException;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JPanelGerenciarReserva extends JPanel {
+public class JPanelGerenciarQuarto extends JPanel {
 
     private JPrincipal principal;
-    private ControladorReserva controlador;
+    private ControladorQuarto controlador;
 
-    public JPanelGerenciarReserva(JPrincipal principal){
+    public JPanelGerenciarQuarto(JPrincipal principal){
         this.principal = principal;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        controlador = ControladorReserva.getInstance();
+        controlador = ControladorQuarto.getInstance();
         initComponents();
-
     }
 
     private void initComponents(){
-
-        String[][] celulas = controlador.getListaReservas();
+        String celulas[][] = controlador.getListaQuartos();
         String[] colunas = celulas[0];
 
-        JTable tableReservas = new JTable(celulas, colunas){
-            @Override
+        JTable tableQuartos = new JTable(celulas,colunas){
             public boolean isCellEditable(int row, int column){
                 return false;
             }
@@ -41,13 +37,12 @@ public class JPanelGerenciarReserva extends JPanel {
                     super.changeSelection(rowIndex, columnIndex, toggle, extend);
                 }
             }
-
         };
 
-        tableReservas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tableQuartos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.add(tableReservas);
-        tableReservas.setFillsViewportHeight(true);
+        scrollPane.add(tableQuartos);
+        tableQuartos.setFillsViewportHeight(true);
         scrollPane.setSize(500, 100);
 
         JButton btnVoltar = new JButton("Voltar");
@@ -62,24 +57,23 @@ public class JPanelGerenciarReserva extends JPanel {
             }
         });
 
-        btnNova.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                principal.RealizarReserva(false, null);
-            }
-        });
-
         btnExcluir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(tableReservas.getSelectedRow() != -1) {
+                if(tableQuartos.getSelectedRow() != -1) {
                     int confirm = 0;
-                    confirm = JOptionPane.showConfirmDialog(null, "Tem certeza de que deseja excluir a reserva?", "Tem certeza?", JOptionPane.YES_NO_OPTION);
+                    confirm = JOptionPane.showConfirmDialog(null, "Tem certeza de que deseja excluir o quarto?", "Tem certeza?", JOptionPane.YES_NO_OPTION);
                     if (confirm == JOptionPane.YES_OPTION) {
-                        controlador.removerReserva(Integer.parseInt(tableReservas.getValueAt(tableReservas.getSelectedRow(), 0).toString()));
-                        JOptionPane.showMessageDialog(null, "Reserva removida com sucesso.");
-                        principal.Voltar();
-                        principal.GerenciarReserva();
+                        try {
+                            controlador.ExcluirQuarto(Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString()));
+                            JOptionPane.showMessageDialog(null,
+                                    "Quarto removido com sucesso.");
+                            principal.Voltar();
+                            principal.GerenciarQuarto();
+                        } catch (QuartoReservadoException e){
+                            JOptionPane.showMessageDialog(null,
+                                    "Este quarto está reservado. Cancele a reserva para removê-lo.");
+                        }
                     }
                 }
             }
@@ -88,18 +82,23 @@ public class JPanelGerenciarReserva extends JPanel {
         btnEditar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(tableReservas.getSelectedRow()!=-1){
-                    principal.RealizarReserva(true,
-                            Long.parseLong(tableReservas.getValueAt(tableReservas.getSelectedRow(), 0).toString()));
+                if(tableQuartos.getSelectedRow() != -1){
+                    principal.EditarQuarto(true,
+                            Integer.parseInt(tableQuartos.getValueAt(tableQuartos.getSelectedRow(), 0).toString()));
                 }
+            }
+        });
+
+        btnNova.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                principal.EditarQuarto(false, -1);
             }
         });
 
         this.add(gerarPanel(btnEditar, btnExcluir));
         this.add(scrollPane);
         this.add(gerarPanel(btnVoltar, btnNova));
-
-
     }
 
     private JPanel gerarPanel(Component... compList) {
