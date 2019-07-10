@@ -11,6 +11,7 @@ public class Valores implements Serializable {
     private double valorTV;
     private double valorCafe;
     private float porcentagemPagamento;
+    private double valorDiaria;
 
 
     public double getValorCamaSolteiro() {
@@ -67,5 +68,13 @@ public class Valores implements Serializable {
 
     public void setValorCafe(double valorCafe) {
         this.valorCafe = valorCafe;
+    }
+
+    public double getValorDiaria() {
+        return valorDiaria;
+    }
+
+    public void setValorDiaria(double valorDiaria) {
+        this.valorDiaria = valorDiaria;
     }
 }

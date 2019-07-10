@@ -52,10 +52,10 @@ public class ControladorReserva {
     }
 
     private float calcularValorTotal(){
-        Valores valores = ValoresDAO.getValores();
+        Valores valores = (Valores)ValoresDAO.getValores();
         Quarto q = reservaBuilder.getQuarto();
         float custo = 0;
-        custo += q.getValor();
+        custo += reservaBuilder.getQtdDias()*valores.getValorDiaria();
         if(reservaBuilder.isIncluiCafe()) custo += valores.getValorCafe();
         if(q.isInternet()) custo += valores.getValorInternet();
         if(q.isBanheiro()) custo += valores.getValorBanheiro();
@@ -155,8 +155,8 @@ public class ControladorReserva {
         List<Quarto> quartos = QuartoDAO.getQuartos();
         int N = quartos.size() + 1;
 
-        String retorno[][] = new String[N][7];
-        String[] colunas =  {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Banheiro", "Valor"};
+        String retorno[][] = new String[N][6];
+        String[] colunas =  {"Número", "Camas de Casal", "Camas de solteiro", "Internet", "TV a cabo", "Banheiro"};
         retorno[0] = colunas;
         int i =1;
         for(Quarto q : quartos){
@@ -166,7 +166,6 @@ public class ControladorReserva {
             retorno[i][3] = String.valueOf(q.isInternet());
             retorno[i][4] = String.valueOf(q.isCabo());
             retorno[i][5] = String.valueOf(q.isBanheiro());
-            retorno[i][6] = String.valueOf(q.getValor());
             i++;
         }
         return retorno;

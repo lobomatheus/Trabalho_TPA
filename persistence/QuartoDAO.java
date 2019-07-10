@@ -48,4 +48,35 @@ public class QuartoDAO {
 
         return quarto;
     }
+
+    public static void cadastrarQuarto(Quarto quarto){
+        startManager();
+
+        _manager.getTransaction().begin();
+        _manager.persist(quarto);
+        _manager.getTransaction().commit();
+
+        closeManagerAndFactory();
+    }
+
+    public static void updateQuarto(Quarto quarto){
+        startManager();
+
+        _manager.getTransaction().begin();
+        _manager.merge(quarto);
+        _manager.getTransaction().commit();
+
+        closeManagerAndFactory();
+
+    }
+
+    public static void removeQuarto(Quarto quarto){
+        startManager();
+
+        _manager.getTransaction().begin();
+        _manager.remove(_manager.getReference(Quarto.class, quarto.getNum()));
+        _manager.getTransaction().commit();
+
+        closeManagerAndFactory();
+    }
 }

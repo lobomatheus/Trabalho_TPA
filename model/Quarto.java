@@ -24,7 +24,6 @@ public class Quarto {
     boolean banheiro;
     boolean internet;
     boolean cabo;
-    double valor;
 
     public Quarto(){
 
@@ -63,10 +62,6 @@ public class Quarto {
         return cabo;
     }
 
-    public double getValor() {
-        return valor;
-    }
-
     public String getCamas() {
         int solteiro = getCamas_solt();
         int casal = getCamas_cas();
@@ -86,10 +81,6 @@ public class Quarto {
         this.cabo = cabo;
     }
 
-    public void setValor(double valor){
-        this.valor = valor;
-    }
-    
     //mudar esse para interagir com o mouse
     public void setCama(int tipo){
         if (tipo == 1)
