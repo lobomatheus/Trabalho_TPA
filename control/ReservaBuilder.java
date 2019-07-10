@@ -33,6 +33,7 @@ public class ReservaBuilder {
     public Reserva getReserva() throws ValorPagoException{
         if(valorPago == 0) throw new ValorPagoException();
         Reserva reserva = new Reserva(this.dataEntrada, this.qtdDias, this.incluiCafe, this.quarto);
+        reserva.calcularValor(this.valorTotal);
         reserva.realizarPagamento(this.valorPago);
         return reserva;
     }

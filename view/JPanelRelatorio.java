@@ -41,7 +41,7 @@ public class JPanelRelatorio extends JPanel {
         btnMensal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                float res = controlador.RelatorioMensal(checkMensal.isSelected());
+                double res = controlador.RelatorioMensal(checkMensal.isSelected());
                 JOptionPane.showMessageDialog(null, "O valor arrecadado mensal foi de R$" + String.format("%.2f", res) + ".");
             }
         });

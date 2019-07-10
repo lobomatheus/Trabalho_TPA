@@ -207,4 +207,9 @@ public class ControladorReserva {
         ReservaDAO.removeReserva(reserva);
 
     }
+
+    public float retornarPorcentagem(){
+        Valores val = (Valores)ValoresDAO.getValores();
+        return val.getPorcentagemPagamento();
+    }
 }

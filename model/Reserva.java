@@ -83,16 +83,13 @@ public class Reserva {
         this.checkin = true;
     }
 
-    public float calcularValor(){
-        float valor = 0;
+    public float calcularValor(float valor){
 
         this.valorTotal = valor;
         return valor;
     }
 
     public void realizarPagamento(float valor) throws ValorPagoException{
-        // Exceção de valor pago ser superior ao necessário
-        if(valor + this.valorPago > this.valorTotal) throw new ValorPagoException();
         this.valorPago += valor;
     }
 }

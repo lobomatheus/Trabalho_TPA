@@ -118,23 +118,21 @@ public class ReservaDAO {
         closeManagerAndFactory();
     }
 
-    public static double getReservaByAno(boolean checkin){
-        double sum=0.0;
+    public static double getReservaByAno(boolean futuro){
+        double sum;
 
         startManager();
 
         //Vai retornar o preço total arrecadado
-        if(checkin){
-            sum = (double)_manager.createQuery("select sum(r.valorPago) " +
+        if(futuro){
+            sum = (double)_manager.createQuery("select sum(r.valorTotal) " +
                     "from Reserva as r " +
-                    "where (year(current_date()) - year(r.dataEntrada)) < 1 " +
-                    "and r.checkin = checkin").getSingleResult();
+                    "where (year(current_date()) - year(r.dataEntrada)) < 1 ").getSingleResult();
 
         } else{
-            sum = (double)_manager.createQuery("select sum(r.valorTotal-r.valorPago) " +
+            sum = (double)_manager.createQuery("select sum(r.valorPago) " +
                     "from Reserva as r " +
-                    "where (year(current_date()) - year(r.dataEntrada)) < 1 " +
-                    "and r.checkin = checkin").getSingleResult();
+                    "where (year(current_date()) - year(r.dataEntrada)) < 1 ").getSingleResult();
 
         }
 
@@ -143,23 +141,21 @@ public class ReservaDAO {
         return sum;
     }
 
-    public static float getReservaByMes(boolean checkin){
-        float sum=0.0f;
+    public static double getReservaByMes(boolean futuro){
+        double sum;
 
         startManager();
 
         // Vai retornar o preço total arrecadado
-        if(checkin){
-            sum = (float)_manager.createQuery("select sum(r.valorPago) " +
+        if(futuro){
+            sum = (double)_manager.createQuery("select sum(r.valorTotal) " +
                     "from Reserva as r " +
-                    "where (month(current_date()) - month(r.dataEntrada)) < 1 " +
-                    "and r.checkin = checkin").getSingleResult();
+                    "where (month(current_date()) - month(r.dataEntrada)) < 1 ").getSingleResult();
 
         } else{
-            sum = (float)_manager.createQuery("select sum(r.valorTotal-r.valorPago) " +
+            sum = (double)_manager.createQuery("select sum(r.valorPago) " +
                     "from Reserva as r " +
-                    "where (month(current_date()) - month(r.dataEntrada)) < 1 " +
-                    "and r.checkin = checkin").getSingleResult();
+                    "where (month(current_date()) - month(r.dataEntrada)) < 1 ").getSingleResult();
 
         }
 

@@ -105,26 +105,25 @@ public class JPanelReservar extends JPanel {
 
 
                     float valorPago;
-
+                    float porcentagem = controlador.retornarPorcentagem();
                     while(true){
                         try {
-                            valorPago = Float.parseFloat(JOptionPane.showInputDialog(null,
-                                    "O valor total da reserva deu: " + valor + "\nQuanto deseja pagar?"));
+                            String input;
+                            input = JOptionPane.showInputDialog(null,
+                                    "O valor total da reserva deu: " + valor + "\nQuanto deseja pagar?");
+                            if(input == null){
+                                controlador.cancelarReserva();
+                                return;
+                            }
+                            valorPago = Float.parseFloat(input);
                             controlador.pagarReservaEmConstrucao(valorPago);
                             controlador.realizarReserva();
                             JOptionPane.showMessageDialog(null, "Reserva realizada com sucesso!");
                             break;
 
                         } catch (ValorPagoException e){
-                            valorPago = Float.parseFloat(JOptionPane.showInputDialog(null,
-                                    "O valor total da reserva deu: " + valor + " e você precisa pagar [porcentagem]\n" +
-                                            "Quanto deseja pagar (0 para cancelar)?"));
-
-                            if(valorPago == 0){
-                                JOptionPane.showMessageDialog(null, "Reserva cancelada com sucesso!");
-                                controlador.cancelarReserva();
-                                break;
-                            }
+                            JOptionPane.showMessageDialog(null,
+                                    "O valor total da reserva deu: " + valor + " e você precisa pagar " + porcentagem*100 + "% do total.");
                         } catch (NumberFormatException e){
                             JOptionPane.showMessageDialog(null, "Valor inserido incorretamente!");
                         }

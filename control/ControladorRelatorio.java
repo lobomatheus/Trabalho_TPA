@@ -21,14 +21,14 @@ public class ControladorRelatorio {
         return controladorRelatorio;
     }
 
-    public double RelatorioAnual(boolean checkin){
-        double soma = ReservaDAO.getReservaByAno(checkin);
+    public double RelatorioAnual(boolean futuro){
+        double soma = ReservaDAO.getReservaByAno(futuro);
 
         return soma;
     }
 
-    public float RelatorioMensal(boolean checkin){
-        float soma = ReservaDAO.getReservaByMes(checkin);
+    public double RelatorioMensal(boolean futuro){
+        double soma = ReservaDAO.getReservaByMes(futuro);
 
         return soma;
     }
