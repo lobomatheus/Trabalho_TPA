@@ -5,7 +5,6 @@ import exception.ValorPagoException;
 import model.Quarto;
 import model.Reserva;
 import model.Valores;
-import persistence.QuartoDAO;
 import persistence.ReservaDAO;
 import persistence.ValoresDAO;
 import sun.java2d.pipe.SpanShapeRenderer;
@@ -40,7 +39,8 @@ public class ControladorReserva {
 
 
     private Quarto encontrarQuarto(int idQuarto){
-        return QuartoDAO.getQuarto(idQuarto);
+        ControladorQuarto controladorQuarto = ControladorQuarto.getInstance();
+        return controladorQuarto.getQuarto(idQuarto);
     }
 
     public void editarReserva(Calendar data, int numDias, boolean comCafe, int idQuarto, Long id){
@@ -152,7 +152,8 @@ public class ControladorReserva {
     }
 
     public String[][] getListaQuartos(){
-        List<Quarto> quartos = QuartoDAO.getQuartos();
+        ControladorQuarto controladorQuarto = ControladorQuarto.getInstance();
+        List<Quarto> quartos = controladorQuarto.getQuartos();
         int N = quartos.size() + 1;
 
         String retorno[][] = new String[N][6];
