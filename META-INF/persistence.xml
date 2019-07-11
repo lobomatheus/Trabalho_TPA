@@ -19,9 +19,9 @@
             <property name="javax.persistence.jdbc.url"
                       value="jdbc:mysql://localhost/Hotel" />
             <property name="javax.persistence.jdbc.user"
-                      value="root" />
+                      value="hotel" />
             <property name="javax.persistence.jdbc.password"
-                      value="root" />
+                      value="hotel" />
 
             <!--  propriedades do hibernate -->
             <property name="hibernate.dialect"
@@ -50,9 +50,9 @@
             <property name="javax.persistence.jdbc.url"
                       value="jdbc:mysql://localhost/Hotel" />
             <property name="javax.persistence.jdbc.user"
-                      value="root" />
+                      value="hotel" />
             <property name="javax.persistence.jdbc.password"
-                      value="root" />
+                      value="hotel" />
 
             <!--  propriedades do hibernate -->
             <property name="hibernate.dialect"
