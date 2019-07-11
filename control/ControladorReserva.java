@@ -68,6 +68,13 @@ public class ControladorReserva {
 
     }
 
+    public boolean fezPagamento(int idReserva){
+        Reserva r = ReservaDAO.getReserva(idReserva);
+
+        return(r.getValorPago() >= r.getValorTotal());
+
+    }
+
     private boolean verificarCheckin(Reserva r){
 
         Calendar now = Calendar.getInstance();

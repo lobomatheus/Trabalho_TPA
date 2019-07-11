@@ -64,6 +64,10 @@ public class JPanelCheckin extends JPanel {
                 if(tableReservas.getSelectedRow() != -1){
                     try{
                         int numReserva = Integer.parseInt(tableReservas.getValueAt(tableReservas.getSelectedRow(), 0).toString());
+                        if(!controlador.fezPagamento(numReserva)){
+                            JOptionPane.showMessageDialog(null, "Você precisa pagar a reserva integralmente antes de realizar o checkin!");
+                            return;
+                        }
                         controlador.FazerCheckin(numReserva);
                         JOptionPane.showMessageDialog(null, "Checkin realizado com sucesso!");
                         principal.Voltar();

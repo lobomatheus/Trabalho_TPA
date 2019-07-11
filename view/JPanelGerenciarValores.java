@@ -86,7 +86,7 @@ public class JPanelGerenciarValores extends JPanel {
         this.add(gerarPanel(lblBanheiro, txtBanheiro));
         this.add(gerarPanel(lblInternet, txtInternet));
         this.add(gerarPanel(lblTV, txtTV));
-        this.add(gerarPanel(btnSalvar, btnVoltar));
+        this.add(gerarPanel(btnVoltar, btnSalvar));
 
 
     }

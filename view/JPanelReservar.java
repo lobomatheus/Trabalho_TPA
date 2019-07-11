@@ -46,7 +46,8 @@ public class JPanelReservar extends JPanel {
 
         JLabel lblData = new JLabel("Data de entrada:  ");
 
-        JSpinner spinner = new JSpinner();
+        SpinnerNumberModel model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+        JSpinner spinner = new JSpinner(model);
         JLabel lblNdias = new JLabel("Quantidade de dias: ");
 
         JCheckBox boxCafe = new JCheckBox("Inclui café da manhã");
