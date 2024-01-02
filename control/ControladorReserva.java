@@ -80,7 +80,7 @@ public class ControladorReserva {
         Calendar now = Calendar.getInstance();
         Calendar rDate = r.getDataEntrada();
 
-        if(rDate.getTimeInMillis() - now.getTimeInMillis() < 24*60*60*1000){
+        if(rDate.getTimeInMillis() - now.getTimeInMillis() > 24*60*60*1000){
             if(!r.isCheckin()){
                 ReservaDAO.removeReserva(r);
                 return true;

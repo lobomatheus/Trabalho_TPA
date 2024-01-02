@@ -5,7 +5,7 @@
  */
 package view;
 
-import control.ControladorCadastros;
+import control.ControladorQuarto;
 
 /**
  *
@@ -13,6 +13,6 @@ import control.ControladorCadastros;
  */
 public class Menu {
     public static void main(String args[]){
-        ControladorCadastros cc = new ControladorCadastros();
+        ControladorQuarto cc = ControladorQuarto.getInstance();
     }
 }
